@@ -12,6 +12,7 @@
         <module name="learn_mybatis" />
         <module name="learn_spring_boot_kafka" />
         <module name="base" />
+        <module name="maven_learn_spring" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -19,7 +20,6 @@
       <module name="learn_spring_boot_activiti" target="1.8" />
       <module name="learn_spring_boot_relate" target="1.8" />
       <module name="learn_spring_relate" target="1.8" />
-      <module name="maven_learn_spring" target="8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
