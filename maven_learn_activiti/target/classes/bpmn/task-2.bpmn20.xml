@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="task-2" name="task-2" isExecutable="true">
+    <startEvent id="task-2-sart" name="task-2-开始"/>
+    <userTask id="sid-cacc47b9-ea45-48aa-a179-4e884863b143" name="审批">
+      <extensionElements>
+        <!--这里是增加了监听器-->
+<!--        <flowable:taskListener event="create" class="com.panda.activiti.demo01.TaskListenerImpl"/>-->
+        <flowable:taskListener event="create" class="com.panda.activiti.demo01.TaskListenerImpl2"/>
+      </extensionElements>
+    </userTask>
+    <endEvent id="task-2-end" name="task-2-结束"/>
+    <sequenceFlow id="sid-deb3065c-7bb3-4a08-9d49-80dac5acaeac" sourceRef="task-2-sart" targetRef="sid-cacc47b9-ea45-48aa-a179-4e884863b143"/>
+    <sequenceFlow id="sid-71e63c68-79d4-4bf0-8ef9-dc75ebe9bfaf" sourceRef="sid-cacc47b9-ea45-48aa-a179-4e884863b143" targetRef="task-2-end"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_task-2">
+    <bpmndi:BPMNPlane bpmnElement="task-2" id="BPMNPlane_task-2">
+      <bpmndi:BPMNShape id="shape-41bde532-680a-4f13-8b8f-9d40542c2e92" bpmnElement="task-2-sart">
+        <omgdc:Bounds x="-170.0" y="-50.0" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-5d9db18d-3743-42a6-93a0-fe255ca13f0e" bpmnElement="sid-cacc47b9-ea45-48aa-a179-4e884863b143">
+        <omgdc:Bounds x="-95.0" y="-75.0" width="100.0" height="80.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-1d841ce4-57e8-47b5-8e14-d5269a7cd397" bpmnElement="task-2-end">
+        <omgdc:Bounds x="70.0" y="-50.0" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-53c3b09d-f6ee-42b4-9b78-c5fedf51c488" bpmnElement="sid-deb3065c-7bb3-4a08-9d49-80dac5acaeac">
+        <omgdi:waypoint x="-140.0" y="-35.0"/>
+        <omgdi:waypoint x="-95.0" y="-35.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge-849a07ea-76d6-4f12-9257-3f4fe667a2ce" bpmnElement="sid-71e63c68-79d4-4bf0-8ef9-dc75ebe9bfaf">
+        <omgdi:waypoint x="5.0" y="-35.0"/>
+        <omgdi:waypoint x="70.0" y="-35.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
