@@ -11,6 +11,7 @@
     <modules>
         <module>base</module>
         <module>learn_mybatis</module>
+        <module>maven_learn_activiti</module>
     </modules>
 
     <properties>
