@@ -8,21 +8,24 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="maven_learn_activiti" />
+        <module name="learn_spring_boot" />
         <module name="learn_mybatis" />
         <module name="learn_spring_boot_kafka" />
         <module name="base" />
-        <module name="learn_spring_boot_relate" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="base_test" target="1.8" />
       <module name="learn_spring_boot_activiti" target="1.8" />
+      <module name="learn_spring_boot_relate" target="1.8" />
       <module name="learn_spring_relate" target="1.8" />
+      <module name="maven_learn_spring" target="8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="base_test" options="-parameters" />
+      <module name="learn_spring_boot" options="-parameters" />
       <module name="learn_spring_boot_activiti" options="-parameters" />
       <module name="learn_spring_boot_kafka" options="-parameters" />
       <module name="learn_spring_boot_relate" options="-parameters" />
