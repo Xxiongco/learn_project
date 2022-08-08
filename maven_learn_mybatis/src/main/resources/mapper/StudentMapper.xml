@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.panda.dao.StudentMapper">
+
+    <sql id="BaseSql">
+        s.id,
+        s.name,
+        s.num
+    </sql>
+
+    <select id="queryAll" resultType="com.panda.domain.Student">
+        select
+        <include refid="BaseSql"/>
+        from student s
+    </select>
+
+    <select id="queryById" resultType="com.panda.domain.Student">
+        select
+        <include refid="BaseSql"/>
+        from student s
+        where s.id = #{id}
+    </select>
+</mapper>
