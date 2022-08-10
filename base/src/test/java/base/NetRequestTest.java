@@ -1,5 +1,13 @@
 package base;
 
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -63,6 +71,8 @@ public class NetRequestTest {
     }
 
     /**
+     *
+     *  通过JDK网络类Java.net.HttpURLConnection；
      *  connection.connect()的时候，会给HttpClient（继承NetworkClient，有Socket对象）赋值；
      *  connection.getResponseCode()的时候，会将相关信息写入到，socket的outputStream
      */
@@ -118,6 +128,86 @@ public class NetRequestTest {
             connection.disconnect();
             System.out.println(result);
         }
+    }
+
+    /**
+     *  通过common封装好的HttpClient；
+     *
+     *  执行
+     *  httpClient.executeMethod(getMethod)
+     *  的时候
+     *  HttpMethodDirector.executeMethod -> executeWithRetry->this.conn.open()中创造socket
+     *  HttpMethodBase.execute() ： 其中会往socket中的outputStream写入数据。
+     *
+     */
+    @Test
+    public void HttpClientTest() {
+        HttpClient httpClient = new HttpClient();
+        //设置Http连接超时为5秒
+        httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+        //2.生成GetMethod对象并设置参数
+        GetMethod getMethod = new GetMethod(HTTP_URL);
+        //设置get请求超时为5秒
+        getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
+        //设置请求重试处理，用的是默认的重试处理：请求三次
+        getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+        String response = "";
+        //3.执行HTTP GET 请求
+        try {
+            int statusCode = httpClient.executeMethod(getMethod);
+            //4.判断访问的状态码
+            if (statusCode != HttpStatus.SC_OK) {
+                System.err.println("请求出错：" + getMethod.getStatusLine());
+            }
+            //5.处理HTTP响应内容
+            //HTTP响应头部信息，这里简单打印
+            Header[] headers = getMethod.getResponseHeaders();
+            for(Header h : headers) {
+                System.out.println(h.getName() + "---------------" + h.getValue());
+            }
+            //读取HTTP响应内容，这里简单打印网页内容
+            //读取为字节数组
+            byte[] responseBody = getMethod.getResponseBody();
+            response = new String(responseBody, "UTF-8");
+            System.out.println("-----------response:" + response);
+            //读取为InputStream，在网页内容数据量大时候推荐使用
+            //InputStream response = getMethod.getResponseBodyAsStream();
+        } catch (HttpException e) {
+            //发生致命的异常，可能是协议不对或者返回的内容有问题
+            System.out.println("请检查输入的URL!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            //发生网络异常
+            System.out.println("发生网络异常!");
+        } finally {
+            //6.释放连接
+            getMethod.releaseConnection();
+        }
+        System.out.println(response);
+    }
+
+    /**
+     *  通过Apache封装好的CloseableHttpClient
+     *  这个很复杂责任链模式
+     *  而且，对socket的写入也很麻烦，需要走很多路径
+     *
+     */
+    @Test
+    public void closeableHttpClientTest() {
+        //创建HttpClient对象
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpGet httpGet = new HttpGet(HTTP_URL);
+        try {
+            HttpResponse response = httpClient.execute(httpGet);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                //返回json格式
+                String res = EntityUtils.toString(response.getEntity());
+                System.out.println(res);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
