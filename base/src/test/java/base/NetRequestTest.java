@@ -24,6 +24,11 @@ import java.nio.charset.StandardCharsets;
  *  4、通过SpringBoot-RestTemplate；
  */
 
+/**
+ *  总结：虽然后面的没有看完，但是基本上可以确定，向接口发起请求，是先获取socket,然后获取socket的outPutStream,
+ *  再往里面塞入数据，然后便可以获取请求的结果。
+ */
+
 public class NetRequestTest {
 
     public static String HTTP_URL = "http://localhost:8081/hello";
