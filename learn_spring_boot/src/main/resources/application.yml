@@ -1,2 +1,5 @@
 server:
   port: 8081
+
+my:
+   name: ${MY_NANE:panda man}
