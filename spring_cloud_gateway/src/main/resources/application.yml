@@ -1,0 +1,13 @@
+server:
+  port: 8090
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test_route
+          uri: http://localhost:8091
+          predicates:
+            - Path=/myspringboot/**
+            # 访问 localhost:8090/myspringboot/xxxx  会被路由至 http://localhost:8091/xxxx
+          filters:
+            - StripPrefix=1
