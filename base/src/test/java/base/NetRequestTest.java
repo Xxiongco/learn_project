@@ -27,6 +27,11 @@ import java.nio.charset.StandardCharsets;
 /**
  *  总结：虽然后面的没有看完，但是基本上可以确定，向接口发起请求，是先获取socket,然后获取socket的outPutStream,
  *  再往里面塞入数据，然后便可以获取请求的结果。
+ *
+ *
+ *  spring的feign基于CloseableHttpClient
+ *
+ *
  */
 
 public class NetRequestTest {
@@ -196,6 +201,7 @@ public class NetRequestTest {
      *  这个很复杂责任链模式
      *  而且，对socket的写入也很麻烦，需要走很多路径
      *
+     *  spring的feign基于这个 InternalHttpClient
      */
     @Test
     public void closeableHttpClientTest() {
