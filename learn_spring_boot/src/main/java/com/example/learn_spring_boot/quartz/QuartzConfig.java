@@ -31,9 +31,6 @@ import java.util.Properties;
 public class QuartzConfig {
 
 
-    @Autowired
-    private DataSource dataSource;
-
     //@Bean
     public JobDetail jobDetail() {
         //指定任务描述具体的实现类
@@ -67,7 +64,7 @@ public class QuartzConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
+    public SchedulerFactoryBean schedulerFactoryBean(DataSource dataSource) throws IOException {
         PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
         propertiesFactoryBean.setLocation(new ClassPathResource("quartz.properties"));
         propertiesFactoryBean.afterPropertiesSet();
@@ -76,13 +73,13 @@ public class QuartzConfig {
         factory.setOverwriteExistingJobs(true);
         factory.setAutoStartup(true);
         factory.setQuartzProperties((Properties)Objects.requireNonNull(pro));
-        factory.setDataSource(this.dataSource);
+        factory.setDataSource(dataSource);
         return factory;
     }
 
     @Bean("scheduler")
-    public Scheduler scheduler() throws IOException {
-        return this.schedulerFactoryBean().getScheduler();
+    public Scheduler scheduler(DataSource dataSource) throws IOException {
+        return this.schedulerFactoryBean(dataSource).getScheduler();
     }
 
 }

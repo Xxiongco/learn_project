@@ -1,6 +1,7 @@
 package com.example.learn_spring_boot.quartz;
 
 
+import com.example.learn_spring_boot.quartz.domian.JobInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class QuartzController implements ApplicationRunner {
                  * 可以通过jobExecutionContext.getTrigger().getJobDataMap().get("orderNo")获取值  */
                 .usingJobData("orderNo", "123456")
                 /** 添加认证信息 */
-                .withIdentity("我是name","我是group")
+                .withIdentity("triggerKey.name","triggerKey.group")
                 /** 立即生效 */
                 .startNow()
                 /** 添加执行规则 */
@@ -44,7 +45,7 @@ public class QuartzController implements ApplicationRunner {
                 .usingJobData("name","zy")
                 .usingJobData("age",23)
                 /**添加认证信息，有3种重写的方法，我这里是其中一种，可以查看源码看其余2种*/
-                .withIdentity("我是name","我是group")
+                .withIdentity("jobKey.name","jobKey.group")
                 .build();//执行
 
         scheduler.scheduleJob(jobDetail, trigger);
@@ -69,10 +70,48 @@ public class QuartzController implements ApplicationRunner {
 
     @GetMapping("/again")
     public void startAnotherJob() throws SchedulerException {
-        scheduler.triggerJob(JobKey.jobKey("我是name","我是group"));
+        scheduler.triggerJob(JobKey.jobKey("jobKey.name","jobKey.group"));
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
     }
+
+    @GetMapping("/create")
+    public void createJob(JobInfo jobInfo) throws Exception {
+        JobUtil.createJob(scheduler,
+                QuartzUtil.buildJobDetail(MyTestJob.class, JobUtil.getJobKeyName("1"), JobUtil.getJobKeyGroup("1")),
+                QuartzUtil.buildCronTrigger(JobUtil.getTriggerKey("1"), JobUtil.getTriggerGroup("1"), JobUtil.getCorn()));
+    }
+
+    @GetMapping("/create2")
+    public void createJob2(JobInfo jobInfo) throws Exception {
+        JobUtil.createJob(scheduler,
+                QuartzUtil.buildJobDetail(MyTestJob2.class, JobUtil.getJobKeyName("2"), JobUtil.getJobKeyGroup("2")),
+                QuartzUtil.buildCronTrigger(JobUtil.getTriggerKey("2"), JobUtil.getTriggerGroup("2"), JobUtil.getCorn()));
+    }
+
+    @GetMapping("/process")
+    public void processJob(JobInfo jobInfo) throws Exception {
+        JobUtil.processJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName("1"), JobUtil.getJobKeyGroup("1")));
+    }
+
+    @GetMapping("/pause")
+    public void pauseJob(JobInfo jobInfo) throws Exception {
+        JobUtil.pauseJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName("1"), jobInfo.getJobKeyGroup()));
+    }
+
+    @GetMapping("/resume")
+    public void resumeJob(JobInfo jobInfo) throws Exception {
+        JobUtil.resumeJob(scheduler, JobKey.jobKey(jobInfo.getJobKeyName(), jobInfo.getJobKeyGroup()));
+    }
+
+    @GetMapping("/remove")
+    public void removeJob(JobInfo jobInfo) throws Exception {
+        JobUtil.deleteJob(scheduler,
+                JobKey.jobKey(jobInfo.getJobKeyName(), jobInfo.getJobKeyGroup()),
+                TriggerKey.triggerKey(jobInfo.getTriggerKey(), jobInfo.getTriggerGroup()));
+    }
+
 }
