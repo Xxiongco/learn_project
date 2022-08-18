@@ -96,6 +96,10 @@ public class QuartzController implements ApplicationRunner {
     public void processJob(JobInfo jobInfo) throws Exception {
         JobUtil.processJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName("1"), JobUtil.getJobKeyGroup("1")));
     }
+    @GetMapping("/process2")
+    public void processJob2(JobInfo jobInfo) throws Exception {
+        JobUtil.processJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName("2"), JobUtil.getJobKeyGroup("2")));
+    }
 
     @GetMapping("/pause")
     public void pauseJob(JobInfo jobInfo) throws Exception {
