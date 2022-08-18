@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/quartz")
@@ -78,44 +81,42 @@ public class QuartzController implements ApplicationRunner {
 
     }
 
-    @GetMapping("/create")
-    public void createJob(JobInfo jobInfo) throws Exception {
+    @GetMapping("/create/{name}")
+    public void createJob(@PathVariable("name") String name, String corn) throws Exception {
+
         JobUtil.createJob(scheduler,
-                QuartzUtil.buildJobDetail(MyTestJob.class, JobUtil.getJobKeyName("1"), JobUtil.getJobKeyGroup("1")),
-                QuartzUtil.buildCronTrigger(JobUtil.getTriggerKey("1"), JobUtil.getTriggerGroup("1"), JobUtil.getCorn()));
+                QuartzUtil.buildJobDetail(MyTestJob.class, JobUtil.getJobKeyName(name), JobUtil.getJobKeyGroup(name)),
+                QuartzUtil.buildCronTrigger(JobUtil.getTriggerKey(name), JobUtil.getTriggerGroup(name), Optional.ofNullable(corn).orElse(JobUtil.getCorn())));
     }
 
-    @GetMapping("/create2")
-    public void createJob2(JobInfo jobInfo) throws Exception {
+    @GetMapping("/create2/{name}")
+    public void createJob2(@PathVariable("name") String name, String corn) throws Exception {
+
         JobUtil.createJob(scheduler,
-                QuartzUtil.buildJobDetail(MyTestJob2.class, JobUtil.getJobKeyName("2"), JobUtil.getJobKeyGroup("2")),
-                QuartzUtil.buildCronTrigger(JobUtil.getTriggerKey("2"), JobUtil.getTriggerGroup("2"), JobUtil.getCorn()));
+                QuartzUtil.buildJobDetail(MyTestJob2.class, JobUtil.getJobKeyName(name), JobUtil.getJobKeyGroup(name)),
+                QuartzUtil.buildCronTrigger(JobUtil.getTriggerKey(name), JobUtil.getTriggerGroup(name), Optional.ofNullable(corn).orElse(JobUtil.getCorn())));
     }
 
-    @GetMapping("/process")
-    public void processJob(JobInfo jobInfo) throws Exception {
-        JobUtil.processJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName("1"), JobUtil.getJobKeyGroup("1")));
-    }
-    @GetMapping("/process2")
-    public void processJob2(JobInfo jobInfo) throws Exception {
-        JobUtil.processJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName("2"), JobUtil.getJobKeyGroup("2")));
+    @GetMapping("/process/{name}")
+    public void processJob(@PathVariable("name") String name) throws Exception {
+        JobUtil.processJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName(name), JobUtil.getJobKeyGroup(name)));
     }
 
-    @GetMapping("/pause")
-    public void pauseJob(JobInfo jobInfo) throws Exception {
-        JobUtil.pauseJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName("1"), jobInfo.getJobKeyGroup()));
+    @GetMapping("/pause/{name}")
+    public void pauseJob(@PathVariable("name") String name) throws Exception {
+        JobUtil.pauseJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName(name), JobUtil.getJobKeyGroup(name)));
     }
 
-    @GetMapping("/resume")
-    public void resumeJob(JobInfo jobInfo) throws Exception {
-        JobUtil.resumeJob(scheduler, JobKey.jobKey(jobInfo.getJobKeyName(), jobInfo.getJobKeyGroup()));
+    @GetMapping("/resume/{name}")
+    public void resumeJob(@PathVariable("name") String name) throws Exception {
+        JobUtil.resumeJob(scheduler, JobKey.jobKey(JobUtil.getJobKeyName(name), JobUtil.getJobKeyGroup(name)));
     }
 
-    @GetMapping("/remove")
-    public void removeJob(JobInfo jobInfo) throws Exception {
+    @GetMapping("/remove/{name}")
+    public void removeJob(@PathVariable("name") String name) throws Exception {
         JobUtil.deleteJob(scheduler,
-                JobKey.jobKey(jobInfo.getJobKeyName(), jobInfo.getJobKeyGroup()),
-                TriggerKey.triggerKey(jobInfo.getTriggerKey(), jobInfo.getTriggerGroup()));
+                JobKey.jobKey(JobUtil.getJobKeyName(name), JobUtil.getJobKeyGroup(name)),
+                TriggerKey.triggerKey(JobUtil.getTriggerKey(name), JobUtil.getTriggerGroup(name)));
     }
 
 }
