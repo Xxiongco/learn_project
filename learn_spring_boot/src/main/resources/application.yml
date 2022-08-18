@@ -3,3 +3,12 @@ server:
 
 my:
    name: ${MY_NANE:panda man}
+
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/quartz
+    username: root
+    password: root

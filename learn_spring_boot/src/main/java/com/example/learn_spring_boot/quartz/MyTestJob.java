@@ -10,9 +10,6 @@ import org.quartz.JobExecutionException;
 public class MyTestJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
-        System.out.println(jobExecutionContext);
-
-        log.info("===========    my test job     ==================");
+        log.info( Thread.currentThread().getName() + "===========    my test job     ==================");
     }
 }
